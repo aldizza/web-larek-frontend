@@ -6,7 +6,7 @@ import { TPaymentForm , TContactsForm } from '../../types';
 import { IEvents } from '../base/events';
 import { Form } from './Form';
 
-export class Payment extends Form<TPaymentForm> {
+export class Order extends Form<TPaymentForm> {
 	protected buttonOnline: HTMLButtonElement;
     protected buttonCOD: HTMLButtonElement;
     protected _address: HTMLInputElement;

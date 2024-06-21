@@ -7,7 +7,7 @@ import { ICardActions } from '../Card';
 interface IBasketView {
     items: HTMLElement[];
     total: number;
-    // selected: string[];
+    selected: string[];
 }
 
 export class Basket extends Component<IBasketView> {

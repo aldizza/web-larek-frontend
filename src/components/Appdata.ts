@@ -9,6 +9,7 @@ export class ProductItem extends Model<IProduct> {
     title: string;
     category: string;
     price: number | null;
+	button: string;
 }
 
 export class AppState extends Model<IAppState> {
@@ -31,22 +32,6 @@ export class AppState extends Model<IAppState> {
         this.emitChanges('items:changed', { catalog: this.catalog });
     }
 
-
-    // Проверка консоли
-    // setCatalog(items: IProduct[]) {
-    //     console.log("Received items:", items); // Выводим полученные данные
-    
-    //     // Преобразование данных в каталог продуктов
-    //     this.catalog = items.map(item => {
-    //         const productItem = new ProductItem(item, this.events);
-    //         console.log("Created ProductItem:", productItem); // Выводим созданный объект ProductItem
-    //         return productItem;
-    //     });
-        
-    //     // Оповещение о изменениях в каталоге
-    //     this.emitChanges('items:changed', { catalog: this.catalog });
-    // }
-
     setPreview(item: IProduct) {
 		this.preview = item.id;
 		this.emitChanges('preview:changed', item);
@@ -54,10 +39,10 @@ export class AppState extends Model<IAppState> {
 
     getButtonStatus(item: IProduct) {
 		if (item.price === null) {
-			return 'Не для продажи';
+			return 'Бесценно';
 		}
 		if (!this.basket.some((card) => card.id == item.id)) {
-			return 'Добавить в корзину';
+			return 'В корзину';
 		} else {
 			return 'Убрать из корзины';
 		}
@@ -66,7 +51,7 @@ export class AppState extends Model<IAppState> {
     toggleBasketCard(item: IProduct) {
 		return !this.basket.some((card) => card.id === item.id)
 			? this.addCardToBasket(item)
-			: this.deleteCardFromBasket(item);
+			: this.removeCard(item);
 	}
 
     addCardToBasket(item: IProduct) {
@@ -74,7 +59,7 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('basket:changed');
 	}
 
-	deleteCardFromBasket(item: IProduct) {
+	removeCard(item: IProduct) {
 		this.basket = this.basket.filter((card) => card.id !== item.id);
 		this.emitChanges('basket:changed');
 	}
@@ -128,28 +113,6 @@ export class AppState extends Model<IAppState> {
 		this.order[field] = value;
 		this.validateOrder();
 	}
-
-
-    // (Валидация полностью верная)
-    // validateOrder() {
-    //     const errors: typeof this.formErrors = {};
-    //     if (!this.order.email) {
-    //         errors.email = 'Необходимо указать email';
-    //     }
-    //     if (!this.order.phone) {
-    //         errors.phone = 'Необходимо указать телефон';
-    //     }
-    //     if (!this.order.address) {
-	// 		errors.address = `Необходимо указать адрес`;
-	// 	}
-	// 	if (!this.order.payment) {
-	// 		errors.payment = `Необходимо указать способ оплаты`;
-	// 	}
-
-    //     this.formErrors = errors;
-    //     this.events.emit('formErrors:changed', this.formErrors);
-    //     return Object.keys(errors).length === 0;
-    // }
 
     validateOrder() {
         const errors: typeof this.formErrors = {};

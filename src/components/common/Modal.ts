@@ -16,8 +16,8 @@ export class Modal extends Component<IModalData> {
         this._closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
         this._content = ensureElement<HTMLElement>('.modal__content', container);
 
-        this._closeButton.addEventListener('click', this.close.bind(this));
-        this.container.addEventListener('click', this.close.bind(this));
+        this._closeButton.addEventListener('click', this.closeModal.bind(this));
+        this.container.addEventListener('click', this.closeModal.bind(this));
         this._content.addEventListener('click', (event) => event.stopPropagation());
     }
 
@@ -25,12 +25,12 @@ export class Modal extends Component<IModalData> {
         this._content.replaceChildren(value);
     }
 
-    open() {
+    openModal() {
         this.container.classList.add('modal_active');
         this.events.emit('modal:open');
     }
 
-    close() {
+    closeModal() {
         this.container.classList.remove('modal_active');
         this.content = null;
         this.events.emit('modal:close');
@@ -44,15 +44,7 @@ export class Modal extends Component<IModalData> {
 
     render(data: IModalData): HTMLElement {
         super.render(data);
-        this.open();
-
-        // // Добавляем обработчик для кнопки "в корзину" после рендеринга контента (для того, чтобы модалка закрывалась после нажатия на кнопку купить)
-        // const addToCartButton = document.querySelector('.button');
-        // if (addToCartButton) {
-        //     addToCartButton.addEventListener('click', () => {
-        //         this.close();
-        //     });
-        // }
+        this.openModal();
 
         return this.container;
     }

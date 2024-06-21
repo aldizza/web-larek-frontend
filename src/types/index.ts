@@ -6,31 +6,13 @@ export interface IProduct {
     title: string;
     category: string;
     price: number | null;
+    button: string;
 };
 
-export interface ProductListResponse {
+export interface ProductListRes {
     total: number;
     items: IProduct[];
 };
-
-export interface IAppState {
-	list: IProduct[];
-	preview: string | null;
-	basket: IProduct[];
-	order: IOrder | null;
-}
-
-export type CategoryProperty = 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
-
-export interface Settings {
-    categorySettings: {
-        'софт-скил': string;
-        'другое': string;
-        'дополнительное': string;
-        'кнопка': string;
-        'хард-скил': string;
-    };
-}
 
 export interface IOrder {
     payment: string;
@@ -41,45 +23,65 @@ export interface IOrder {
     items: string[];
 }
 
+export interface IAppState {
+	list: IProduct[];
+	preview: string | null;
+	basket: IProduct[];
+	order: IOrder | null;
+}
 
-interface Modal {
+export type CategoryProperty = 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
+
+export interface ISettings {
+    categorySettings: {
+        'софт-скил': string;
+        'другое': string;
+        'дополнительное': string;
+        'кнопка': string;
+        'хард-скил': string;
+    };
+}
+
+interface IModal {
     isOpen: boolean;
     openModal(data?: any): void;
     closeModal(): void;
     render(element: HTMLElement): void;
 }
 
-// Тип оплаты заказа
+// Тип способа оплаты заказа
 export type PaymentMethod = 'онлайн' | '' | 'при получении';
 
-// Тип для заказа с формой способа оплаты и адреса
+// Тип для заказа с формой оплаты и адреса
 export type TPaymentForm = Pick<IOrder, 'payment' | 'address'>;
 
 // Тип для заказа с формой почты и телефона
 export type TContactsForm = Pick<IOrder, 'email' | 'phone'>;
 
 export type TOrderField = TContactsForm & TPaymentForm;
-// Интерфейс выполнения успешной операции
-export interface IOrderResults {
+
+// Тип для представления ошибок валидации формы на основе ключей из IOrder
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
+
+// Интерфейс заказа
+export interface IOrderResult {
 	id: string;
 	total: number;
 }
 
-// Тип ошибок форм заказа
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
 // Слой представления
+// Интерфейс компонента форм
+export interface IForm {
+	valid: boolean;
+	errors: string[];
+}
+
 // Интерфейс компонента страницы
 export interface IPage {
 	counter: number;
 	catalog: HTMLElement[];
 	locked: boolean;
-}
-
-// Интерфейс компонента форм
-export interface IForm {
-	valid: boolean;
-	errors: string[];
 }
 
 // Интерфейс компонента модального окна

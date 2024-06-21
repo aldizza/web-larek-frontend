@@ -1,4 +1,4 @@
-import { Settings } from '../types';
+import { ISettings } from '../types';
 
 // Используется для запросов данных и отправки заказа
 export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
@@ -11,7 +11,7 @@ export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 // };
 
 // Настройки для приложения
-export const SETTINGS: Settings = {
+export const SETTINGS: ISettings = {
     categorySettings: {
         другое: 'card__category_other',
         'софт-скил': 'card__category_soft',

@@ -1,11 +1,11 @@
 import { Api, ApiListResponse } from './base/api';
-import { IOrder, IProduct, IOrderResults } from "../types";
+import { IOrder, IProduct, IOrderResult } from "../types";
 
 // Определяем интерфейс для API
 export interface IWebLarekAPI {
     getProductList: () => Promise<IProduct[]>;  // Метод для получения списка продуктов
     getProductItem: (id: string) => Promise<IProduct>;  // Метод для получения конкретного продукта по id
-    orderProducts: (order: IOrder) => Promise<IOrderResults>;  // Метод для размещения заказа продуктов
+    orderProducts: (order: IOrder) => Promise<IOrderResult>;  // Метод для размещения заказа продуктов
 }
 
 // Реализуем класс, который расширяет Api и реализует интерфейс IWebLarekAPI
@@ -37,10 +37,10 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
         );
     }
 
-    orderProducts(order: IOrder): Promise<IOrderResults> {
+    orderProducts(order: IOrder): Promise<IOrderResult> {
         // Отправляем заказ продуктов на сервер и возвращаем результат заказа
         return this.post('/order', order).then(
-            (data: IOrderResults) => data
+            (data: IOrderResult) => data
         );
     }
 }

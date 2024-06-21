@@ -5,15 +5,14 @@ import { EventEmitter } from './components/base/events';
 import { ProductItem, ProductItemPreview as CardItemPreview } from './components/Card';
 import { AppState } from './components/Appdata';
 import { Page } from './components/Page';
-import { Api } from './components/base/api';
-import { ProductListResponse, IProduct } from './types';
+// import { Api } from './components/base/api';
+import { IProduct, IOrder } from './types';
 import { ensureElement, cloneTemplate } from './utils/utils';
 import { Modal } from "./components/common/Modal";
 import { Basket } from "./components/common/Basket";
 import { Success } from './components/common/Success';
 import { BasketCard, Card } from './components/Card';
-import { IOrder } from "./types";
-import { Payment as Order, Contacts } from './components/common/Order';
+import { Order as Order, Contacts } from './components/common/Order';
 
 
 const events = new EventEmitter();
@@ -41,13 +40,6 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
 const contact = new Contacts(cloneTemplate(contactsTemplate), events);
 
-// const success = new Success(cloneTemplate(successTemplate), {
-//   onClick: () => {
-//     events.emit('modal:close')
-//     modal.close()
-//   }
-// })
-
 api.getProductList()
     .then(appData.setCatalog.bind(appData))
     .catch(err => {
@@ -57,12 +49,6 @@ api.getProductList()
 // Бизнес-логика (поймали событие, сделали что нужно)
 
 // Изменились элементы каталога
-
-//Из Оно, проверять не надо
-//При событии items:changed происходит обновление списка продуктов на странице page.catalog.
-// Каждый продукт (ProductItem) отображается с использованием шаблонов и данных из массива appData.catalog.
-// При клике на продукт генерируется событие card:select
-// Метод render вызывается для каждого ProductItem, чтобы преобразовать данные продукта (id, title, image, category, price) в HTML, который будет отображен на странице.
 
 events.on('items:changed', () => {
     page.catalog = appData.catalog.map(item => {
@@ -82,11 +68,6 @@ events.on('items:changed', () => {
 
 //  Открытие карточки и блокировка интерфейса
 
-//Когда событие card:select происходит, выполняется функция обратного вызова, которая принимает один аргумент item (должен быть объектом, который содержит все перечисленные свойства и типы ProductItem)
-//page.locked = true используется для блокировки интерфейса во время отображения модального окна.
-//Устанавливается обработчик клика (onClick). При клике на предварительный просмотр карточки будет вызываться событие 'card:addToBasket', которое передает объект item в качестве параметра.
-//Вызывается метод render модального окна (modal), которое отображает содержимое предварительного просмотра продукта.
-
 events.on('card:select', (item: ProductItem) => {
     page.locked = true;
     const card = new CardItemPreview(cloneTemplate(cardPreviewTemplate), {
@@ -101,14 +82,16 @@ events.on('card:select', (item: ProductItem) => {
         category: item.category,
         description: item.description,
         price: item.price,
-        // selected: item.selected
+        // button: appData.getButtonStatus(item),
       }),
     });
 });
 
-// // Отправка карточки в корзину
+
+// Отправка карточки в корзину
 events.on('card:addToBasket', (item: IProduct) => {
 	appData.toggleBasketCard(item);
+    events.emit('basket:open');
 });
 
 // Открытие корзины
@@ -125,7 +108,7 @@ events.on('basket:changed', () => {
 	basket.items = appData.basket.map((basketCard) => {
 		const newBasketCard = new BasketCard(cloneTemplate(cardBasketTemplate), {
 			onClick: () => {
-				appData.deleteCardFromBasket(basketCard);
+				appData.removeCard(basketCard);
 			},
 		});
 		newBasketCard.index = appData.getCardIndex(basketCard);
@@ -135,6 +118,7 @@ events.on('basket:changed', () => {
 		});
 	});
 });
+
 
 // Открытие формы заказа
 events.on('order:open', () => {
@@ -148,18 +132,6 @@ events.on('order:open', () => {
 	});
 });
 
-// Изменилось одно из полей
-// Этот код подписывается на события, имена которых соответствуют шаблону order.*:changed. Когда такое событие происходит, вызывается обработчик, который обновляет соответствующее поле в заказе с новым значением
-// events.on(
-// 	/^order\..*:change/,
-// 	(data: {
-// 		field: keyof Pick<IOrder, 'address' | 'phone' | 'email'>;
-// 		value: string;
-// 	}) => {
-// 		appData.setOrderField(data.field, data.value);
-// 	}
-// );
-
 // Изменения в заказе
 events.on('order:changed', (data: { payment: string; button: HTMLElement }) => {
 	order.togglePayment(data.button);
@@ -167,22 +139,13 @@ events.on('order:changed', (data: { payment: string; button: HTMLElement }) => {
 	appData.validateOrder();
 });
 
-events.on(
-	'order.address:change',
-	(data: {
-		field: keyof Pick<IOrder, 'address'>;
-		value: string;
-	}) => {
+events.on('order.address:change', (data: {field: keyof Pick<IOrder, 'address'>;
+		value: string;}) => {
 		appData.setOrderField(data.field, data.value);
 	}
 );
 
-events.on(
-	/contacts\.(phone|email):change/,
-	(data: {
-		field: keyof Pick<IOrder, 'phone' | 'email'>;
-		value: string;
-	}) => {
+events.on(/contacts\.(phone|email):change/, (data: {field: keyof Pick<IOrder, 'phone' | 'email'>; value: string;}) => {
 		appData.setOrderField(data.field, data.value);
 	}
 );
@@ -221,7 +184,7 @@ events.on('contacts:submit', () => {
 		.then((result) => {
 			const successWindow = new Success(cloneTemplate(successTemplate), {
 				onClick: () => {
-					modal.close();
+					modal.closeModal();
 				},
 			});
 			appData.clearBasket();

@@ -68,7 +68,6 @@ export class Card extends Component<IProduct> {
   }
 
   set price(value: number | null) {
-    // this._price.textContent = value;
     if (value !== null) {
       this._price.textContent = `${cardPrice(value)} синапсов`;
   } else {
@@ -80,9 +79,6 @@ export class Card extends Component<IProduct> {
   }
   }
   
-  // get price(): number {
-	// 	return parseFloat(this._price.textContent || '0');
-	// }
 
   set category(value: CategoryProperty) {
     this._category.textContent = value;
