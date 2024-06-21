@@ -35,7 +35,7 @@ export class Modal extends Component<IModalData> {
         this.content = null;
         this.events.emit('modal:close');
     
-        // Удаляем класс 'page__wrapper_locked' Не придумала более изящного решения, если при закрытии модального окна принудительно не прописать удаление класса, то прокрутка не работает.
+        // Удаляем класс 'page__wrapper_locked' Не придумала более изящного решения, если при закрытии модального окна принудительно не прописать удаление класса, то прокрутка не работает. Посмотри в Page и исправь
         const pageWrapper = document.querySelector('.page__wrapper');
         if (pageWrapper) {
             pageWrapper.classList.remove('page__wrapper_locked');
@@ -45,6 +45,15 @@ export class Modal extends Component<IModalData> {
     render(data: IModalData): HTMLElement {
         super.render(data);
         this.open();
+
+        // // Добавляем обработчик для кнопки "в корзину" после рендеринга контента (для того, чтобы модалка закрывалась после нажатия на кнопку купить)
+        // const addToCartButton = document.querySelector('.button');
+        // if (addToCartButton) {
+        //     addToCartButton.addEventListener('click', () => {
+        //         this.close();
+        //     });
+        // }
+
         return this.container;
     }
 }

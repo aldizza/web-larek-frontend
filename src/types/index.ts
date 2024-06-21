@@ -1,3 +1,4 @@
+
 export interface IProduct {
     id: string;
     description: string;
@@ -13,8 +14,11 @@ export interface ProductListResponse {
 };
 
 export interface IAppState {
-    productList(items: IProduct[]): void;
-};
+	list: IProduct[];
+	preview: string | null;
+	basket: IProduct[];
+	order: IOrder | null;
+}
 
 export type CategoryProperty = 'софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил';
 
@@ -37,6 +41,7 @@ export interface IOrder {
     items: string[];
 }
 
+
 interface Modal {
     isOpen: boolean;
     openModal(data?: any): void;
@@ -44,35 +49,48 @@ interface Modal {
     render(element: HTMLElement): void;
 }
 
+// Тип оплаты заказа
+export type PaymentMethod = 'онлайн' | '' | 'при получении';
 
+// Тип для заказа с формой способа оплаты и адреса
+export type TPaymentForm = Pick<IOrder, 'payment' | 'address'>;
 
-// export interface ProductCard extends Product {
-//     isInBasket?: boolean;
-// }
+// Тип для заказа с формой почты и телефона
+export type TContactsForm = Pick<IOrder, 'email' | 'phone'>;
 
+export type TOrderField = TContactsForm & TPaymentForm;
+// Интерфейс выполнения успешной операции
+export interface IOrderResults {
+	id: string;
+	total: number;
+}
 
-// export interface OrderSuccessResponse {
-//     id: string;
-//     total: number;
-// }
+// Тип ошибок форм заказа
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
-// export interface ErrorResponse {
-//     error: string;
-// }
+// Слой представления
+// Интерфейс компонента страницы
+export interface IPage {
+	counter: number;
+	catalog: HTMLElement[];
+	locked: boolean;
+}
 
+// Интерфейс компонента форм
+export interface IForm {
+	valid: boolean;
+	errors: string[];
+}
 
+// Интерфейс компонента модального окна
+export interface IModalData {
+	content: HTMLElement;
+}
 
-// export type TProductInfo = Pick<Product, 'category' | 'description' | 'title' | 'image' | 'price'>;
-
-// export type TCartInfo = Pick<Product, 'title' | 'price'>;
-
-// export type TPayInfo = Pick<Product, 'category' | 'description' | 'title' | 'image' | 'price'>;
-
-// // export type TContactInfo = Pick<Product, 'email' | 'phone'>;
-
-// export interface ProductData {
-//     cards: Product[];
-//     preview: string | null;
-//     addProduct(product: Product): void;
-//     deleteProduct(productId: string, payload: Function | null): void;
-// }
+// Интерфейс компонента успешного оформления заказа
+export interface ISuccess {
+	total: number;
+}
+export interface ISuccessActions {
+	onClick: () => void;
+}
