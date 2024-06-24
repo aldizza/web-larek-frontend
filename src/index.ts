@@ -2,7 +2,7 @@ import './scss/styles.scss';
 import { WebLarekAPI } from "./components/WebLarekAPI";
 import { API_URL, CDN_URL } from "./utils/constants";
 import { EventEmitter } from './components/base/events';
-import { ProductItem, ProductItemPreview as CardItemPreview } from './components/Card';
+import { ProductItem, ProductItemPreview, BasketCard } from './components/Card';
 import { AppState } from './components/Appdata';
 import { Page } from './components/Page';
 import { IProduct, IOrder } from './types';
@@ -10,8 +10,7 @@ import { ensureElement, cloneTemplate } from './utils/utils';
 import { Modal } from "./components/common/Modal";
 import { Basket } from "./components/common/Basket";
 import { Success } from './components/common/Success';
-import { BasketCard, Card } from './components/Card';
-import { Order as Order, Contacts } from './components/common/Order';
+import { Order, Contacts } from './components/common/Order';
 
 
 const events = new EventEmitter();
@@ -60,8 +59,8 @@ events.on('items:changed', () => {
 
 //  Открытие карточки
 
-events.on('card:select', (item: ProductItem) => {
-    const card = new CardItemPreview(cloneTemplate(cardPreviewTemplate), {
+events.on('card:select', (item: IProduct) => {
+    const card = new ProductItemPreview(cloneTemplate(cardPreviewTemplate), {
       onClick: () => { events.emit('card:addToBasket', item) },
     });
 
@@ -73,12 +72,10 @@ events.on('card:select', (item: ProductItem) => {
         category: item.category,
         description: item.description,
         price: item.price,
+        button: appData.getButtonStatus(item),
       }),
     });
 });
-
-// button: appData.getButtonStatus(item),
-
 
 // Добавление карточки в корзину
 events.on('card:addToBasket', (item: IProduct) => {

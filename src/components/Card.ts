@@ -19,8 +19,6 @@ export class Card extends Component<IProduct> {
 
   constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
     super(container);
-    // this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
-    // this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
     this._image = container.querySelector(`.${blockName}__image`);
     this._title = container.querySelector(`.${blockName}__title`);                                           
     this._category = container.querySelector(`.${blockName}__category`);
@@ -36,27 +34,22 @@ export class Card extends Component<IProduct> {
     }
   }
 
-  //Как в Оно
   set id(value: string) {
     this.container.dataset.id = value;
   }
 
-  //Как в Оно
   get id(): string {
     return this.container.dataset.id || '';
   }
 
-  //Как в Оно
   set title(value: string) {
     this._title.textContent = value;
   }
   
-  //Как в Оно
   get title(): string {
     return this._title.textContent || '';
   }
   
-  //Как в Оно
   set image(value: string) {
     this._image.src = CDN_URL + value;
   }
@@ -84,6 +77,9 @@ export class Card extends Component<IProduct> {
     this._category.classList.add(SETTINGS.categorySettings[value]);
   }
 
+  set button(value: string) {
+		this._button.textContent = value;
+	}
 }
 
 function cardPrice(value: number): string {
