@@ -5,7 +5,6 @@ import { EventEmitter } from './components/base/events';
 import { ProductItem, ProductItemPreview as CardItemPreview } from './components/Card';
 import { AppState } from './components/Appdata';
 import { Page } from './components/Page';
-// import { Api } from './components/base/api';
 import { IProduct, IOrder } from './types';
 import { ensureElement, cloneTemplate } from './utils/utils';
 import { Modal } from "./components/common/Modal";
@@ -28,7 +27,7 @@ const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 
 // Модель данных приложения
-//центральная точка для управления данными и состоянием приложения в вашем коде, и его методы и свойства будут использоваться для взаимодействия с этими данными и обеспечения согласованного состояния приложения
+//центральная точка для управления данными и состоянием приложения, и его методы и свойства будут использоваться для взаимодействия с этими данными и обеспечения согласованного состояния приложения
 const appData = new AppState({}, events);
 
 // Глобальные контейнеры
@@ -39,12 +38,6 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
 const contact = new Contacts(cloneTemplate(contactsTemplate), events);
-
-api.getProductList()
-    .then(appData.setCatalog.bind(appData))
-    .catch(err => {
-        console.error(err);
-    });
 
 // Бизнес-логика (поймали событие, сделали что нужно)
 
@@ -65,11 +58,9 @@ events.on('items:changed', () => {
     });
 });
 
-
-//  Открытие карточки и блокировка интерфейса
+//  Открытие карточки
 
 events.on('card:select', (item: ProductItem) => {
-    page.locked = true;
     const card = new CardItemPreview(cloneTemplate(cardPreviewTemplate), {
       onClick: () => { events.emit('card:addToBasket', item) },
     });
@@ -82,13 +73,14 @@ events.on('card:select', (item: ProductItem) => {
         category: item.category,
         description: item.description,
         price: item.price,
-        // button: appData.getButtonStatus(item),
       }),
     });
 });
 
+// button: appData.getButtonStatus(item),
 
-// Отправка карточки в корзину
+
+// Добавление карточки в корзину
 events.on('card:addToBasket', (item: IProduct) => {
 	appData.toggleBasketCard(item);
     events.emit('basket:open');
@@ -118,7 +110,6 @@ events.on('basket:changed', () => {
 		});
 	});
 });
-
 
 // Открытие формы заказа
 events.on('order:open', () => {
@@ -175,7 +166,6 @@ events.on('order:submit', () => {
 	});
 });
 
-
 // Подтверджение формы контактов
 events.on('contacts:submit', () => {
 	appData.setBasketToOrder();
@@ -196,6 +186,23 @@ events.on('contacts:submit', () => {
 			console.error(`Ошибка выполнения заказа ${err}`);
 		});
 });
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+    page.locked = true;
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+    page.locked = false;
+});
+
+// Получаем лоты с сервера
+api.getProductList()
+    .then(appData.setCatalog.bind(appData))
+    .catch(err => {
+        console.error(err);
+    });
 
 
 

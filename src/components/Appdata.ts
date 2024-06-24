@@ -1,7 +1,7 @@
 import { IProduct, IAppState, IOrder, TOrderField, FormErrors } from '../types';
 import { Model } from './base/Model';
 
-//Класс отдельной карточки
+// Класс отдельной карточки
 export class ProductItem extends Model<IProduct> {
     id: string;
     description: string;
@@ -44,7 +44,7 @@ export class AppState extends Model<IAppState> {
 		if (!this.basket.some((card) => card.id == item.id)) {
 			return 'В корзину';
 		} else {
-			return 'Убрать из корзины';
+			return 'Убрать';
 		}
 	}
 

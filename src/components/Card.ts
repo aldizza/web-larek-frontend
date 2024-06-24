@@ -79,7 +79,6 @@ export class Card extends Component<IProduct> {
   }
   }
   
-
   set category(value: CategoryProperty) {
     this._category.textContent = value;
     this._category.classList.add(SETTINGS.categorySettings[value]);

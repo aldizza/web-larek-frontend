@@ -34,12 +34,6 @@ export class Modal extends Component<IModalData> {
         this.container.classList.remove('modal_active');
         this.content = null;
         this.events.emit('modal:close');
-    
-        // Удаляем класс 'page__wrapper_locked' Не придумала более изящного решения, если при закрытии модального окна принудительно не прописать удаление класса, то прокрутка не работает. Посмотри в Page и исправь
-        const pageWrapper = document.querySelector('.page__wrapper');
-        if (pageWrapper) {
-            pageWrapper.classList.remove('page__wrapper_locked');
-        }
     }
 
     render(data: IModalData): HTMLElement {

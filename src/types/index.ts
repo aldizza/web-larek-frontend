@@ -9,11 +9,6 @@ export interface IProduct {
     button: string;
 };
 
-export interface ProductListRes {
-    total: number;
-    items: IProduct[];
-};
-
 export interface IOrder {
     payment: string;
     email: string;
