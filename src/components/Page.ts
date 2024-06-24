@@ -33,7 +33,7 @@ export class Page extends Component<IPage> {
         this._catalog.replaceChildren(...items);
     }
 
-    // Сеттер для товаров на в корзине
+    // Сеттер для товаров в корзине
     set counter(value: number) {
 		this.setText(this._counter, String(value));
 	}

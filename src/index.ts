@@ -72,14 +72,14 @@ events.on('card:select', (item: IProduct) => {
         category: item.category,
         description: item.description,
         price: item.price,
-        button: appData.getButtonStatus(item),
+        button: appData.getCardButton(item),
       }),
     });
 });
 
 // Добавление карточки в корзину
 events.on('card:addToBasket', (item: IProduct) => {
-	appData.toggleBasketCard(item);
+	appData.toggleBasketItem(item);
     events.emit('basket:open');
 });
 
@@ -165,7 +165,7 @@ events.on('order:submit', () => {
 
 // Подтверджение формы контактов
 events.on('contacts:submit', () => {
-	appData.setBasketToOrder();
+	appData.updateOrder();
 	api
 		.orderProducts(appData.order)
 		.then((result) => {

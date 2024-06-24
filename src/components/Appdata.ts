@@ -27,9 +27,9 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('preview:changed', item);
 	}
 
-    getButtonStatus(item: IProduct) {
+    getCardButton(item: IProduct) {
 		if (item.price === null) {
-			return 'Бесценно';
+			return 'В корзину';
 		}
 		if (!this.basket.some((card) => card.id === item.id)) {
 			return 'В корзину';
@@ -38,7 +38,7 @@ export class AppState extends Model<IAppState> {
 		}
 	}
 
-    toggleBasketCard(item: IProduct) {
+    toggleBasketItem(item: IProduct) {
 		return !this.basket.some((card) => card.id === item.id)
 			? this.addCardToBasket(item)
 			: this.removeCard(item);
@@ -74,7 +74,7 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('basket:changed');
 	}
 
-	setBasketToOrder() {
+	updateOrder() {
 		this.order.items = this.basket.map((card) => card.id);
 		this.order.total = this.getTotalCount();
 	}
