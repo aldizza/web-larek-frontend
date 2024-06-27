@@ -2,6 +2,8 @@ import {Component} from "../base/Component";
 import {cloneTemplate, createElement, ensureElement} from "../../utils/utils";
 import {EventEmitter} from "../base/events";
 import { ICardActions } from '../Card';
+import { IProduct } from '../../types';
+import { AppState } from '../Appdata';
 
 
 interface IBasketView {
@@ -35,27 +37,25 @@ export class Basket extends Component<IBasketView> {
 		this.setText(this._total, `${total} синапсов`);
 	}
 	
-
     set items(items: HTMLElement[]) {
         if (items.length) {
             this._list.replaceChildren(...items);
+			this.setDisabled(this._button, false); // Кнопка активируется
         } else {
             this._list.replaceChildren(createElement<HTMLParagraphElement>('p', {
                 textContent: 'Корзина пуста'
             }));
+			this.setDisabled(this._button, true); // Кнопка деактивируется
         }
     }
 
     set selected(items: string[]) {
-        if (items.length) {
-            this.setDisabled(this._button, false);
-        } else {
-            this.setDisabled(this._button, true);
-        }
+        this.setDisabled(this._button, items.length === 0);
     }
 
     set total(total: number) {
         this.setText(this._total, `${total} синапсов`);
     }
-    
-};
+}
+
+

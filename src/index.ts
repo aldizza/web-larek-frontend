@@ -38,6 +38,8 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
 const contact = new Contacts(cloneTemplate(contactsTemplate), events);
 
+
+
 // Бизнес-логика (поймали событие, сделали что нужно)
 
 // Изменились элементы каталога

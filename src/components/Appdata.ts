@@ -29,13 +29,17 @@ export class AppState extends Model<IAppState> {
 
     getCardButton(item: IProduct) {
 		if (item.price === null) {
-			return 'В корзину';
+			return 'tobasket';
 		}
 		if (!this.basket.some((card) => card.id === item.id)) {
-			return 'В корзину';
+			return 'tobasket';
 		} else {
-			return 'Удалить из корзины';
+			return 'outbasket';
 		}
+	}
+
+	isInBasket(item: IProduct): boolean {
+		return this.basket.some((card) => card.id === item.id);
 	}
 
     toggleBasketItem(item: IProduct) {
